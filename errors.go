@@ -30,7 +30,7 @@ func (e Error) Error() (err string) {
 			}
 		}
 	}
-	err = fmt.Sprintf("%s:%s", err, e.msg)
+	err = fmt.Sprintf("%s: %s", err, e.msg)
 	return
 }
 
