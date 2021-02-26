@@ -11,7 +11,7 @@ var sep string = ">"
 // Error is a type that implements the error interface and stores suberrors entered info.
 type Error struct {
 	msg         error
-	path        string
+	Path        string
 	function    string
 	breadcrumbs []string
 }
