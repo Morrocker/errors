@@ -52,13 +52,13 @@ func (e *Error) New(i interface{}) {
 
 // Extend extends the error breadcrumb list
 func (e *Error) Extend() {
-	crumb := fmt.Sprintf("%s.%s", e.path, e.function)
+	crumb := fmt.Sprintf("%s.%s", e.Path, e.function)
 	e.breadcrumbs = append(e.breadcrumbs, crumb)
 }
 
 // SetPath sets the filepath of the function that generated the error.
 func (e *Error) SetPath(p string) {
-	e.path = p
+	e.Path = p
 }
 
 // SetFunc sets the function that generated the error.
