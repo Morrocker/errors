@@ -8,60 +8,25 @@ import (
 
 var sep string = ">"
 
-// Error is a type that implements the error interface and stores suberrors entered info.
-type Error struct {
-	msg         error
-	Path        string
-	function    string
-	breadcrumbs []string
-}
-
-var _ error = (*Error)(nil)
-
-func (e Error) Error() (err string) {
-	if len(e.breadcrumbs) == 1 {
-		err = e.breadcrumbs[0]
-	} else {
-		for i, crumb := range e.breadcrumbs {
-			if i == 0 {
-				err = crumb
-			} else {
-				err = fmt.Sprintf("%s > %s", crumb, err)
-			}
-		}
-	}
-	err = fmt.Sprintf("%s: %s", err, e.msg)
-	return
-}
-
 // New creates a new Error to be used in logging.
-func (e *Error) New(i interface{}) {
+func New(path string, i interface{}) error {
+	var txt string
 	switch v := i.(type) {
 	case error:
-		e.msg = error(v)
+		txt = error(v).Error()
 	case string:
-		e.msg = errors.New(v)
+		txt = v
 	default:
-		e.msg = errors.New("")
 		fmt.Println("wrong type given to the errors.New() function")
 		os.Exit(1)
 	}
-	e.Extend()
-	return
+
+	errMsg := fmt.Sprintf("%s: %s", path, txt)
+	return errors.New(errMsg)
 }
 
-// Extend extends the error breadcrumb list
-func (e *Error) Extend() {
-	crumb := fmt.Sprintf("%s.%s", e.Path, e.function)
-	e.breadcrumbs = append(e.breadcrumbs, crumb)
-}
-
-// SetPath sets the filepath of the function that generated the error.
-func (e *Error) SetPath(p string) {
-	e.Path = p
-}
-
-// SetFunc sets the function that generated the error.
-func (e *Error) SetFunc(f string) {
-	e.function = f
+// Extend asumes a previous path:error exists, so it extends the chain
+func Extend(path string, e error) error {
+	errMsg := fmt.Sprintf("%s > %s", path, e)
+	return errors.New(errMsg)
 }
