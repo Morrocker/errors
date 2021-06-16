@@ -28,11 +28,12 @@ func New(path string, i interface{}) error {
 	return errors.New(errMsg)
 }
 
-func NewSimple(msg string) error {
+// Single creates a single un-asociated error for contextless use
+func Single(msg string) error {
 	return errors.New(msg)
 }
 
-// Extend asumes a previous path:error exists, so it extends the chain
+// Extend takes in a previous error and passes it down prepending the current "function chain link"
 func Extend(path string, e error) error {
 	errMsg := fmt.Sprintf("%s > %s", path, e)
 	return errors.New(errMsg)
